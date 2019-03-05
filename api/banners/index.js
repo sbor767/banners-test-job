@@ -38,4 +38,12 @@ const get = id => {
   return Promise.resolve(banners[id])
 }
 
+const getRandom = () => {
+  const keys = Object.keys(banners)
+  // https://stackoverflow.com/a/5915122
+  const randomId = keys[Math.floor(Math.random()*keys.length)]
+  return get(randomId)
+}
+
 exports.get = get
+exports.getRandom = getRandom

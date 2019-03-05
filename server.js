@@ -35,14 +35,9 @@ const server = http.createServer((req, res) => {
         const urlParsed = url.parse(req.url, true)
 
         if (urlParsed.pathname === '/get') {
-          const id = !!urlParsed.query.id ? +urlParsed.query.id : undefined
-          if (!id) {
-            errorEnd(400, 'No banner id granted.')
-            return
-          }
 
           try {
-            const banner = await require('./api/banners').get(id)
+            const banner = await require('./api/banners').getRandom()
             const html = `<a href="${banner.href}" target="_blank"><img src="${protocol}://${hostname}${portStr}/banners/${banner.fileName}" alt="${banner.title}" width="${banner.width}" height="${banner.height}" /></a>`
             res.end(html)
             return
