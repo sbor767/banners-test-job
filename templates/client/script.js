@@ -1,9 +1,3 @@
-// @TODO Move next to server implode.
-const protocol = 'http'
-const hostname = 'localhost'
-const port = 8091
-const portStr = port ? ':' + port : ''
-
 ;(function() {
 
   const uri = `${protocol}://${hostname}${portStr}/get?id=97`

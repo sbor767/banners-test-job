@@ -12,6 +12,7 @@ const staticServer = require('node-static')
 const fileServer = new staticServer.Server('./public')
 
 const server = http.createServer((req, res) => {
+
   req.addListener('end', () => {
 
     res.setHeader('Access-Control-Allow-Origin', '*')
@@ -24,13 +25,15 @@ const server = http.createServer((req, res) => {
         res.writeHead(code, err.headers)
         res.end()
       }
-      const urlParsed = url.parse(req.url, true)
+
 
       if (err) {
 
         // Treat non file requests
 
         /* /get path */
+        const urlParsed = url.parse(req.url, true)
+
         if (urlParsed.pathname === '/get') {
           const id = !!urlParsed.query.id ? +urlParsed.query.id : undefined
           if (!id) {
@@ -60,5 +63,18 @@ const server = http.createServer((req, res) => {
 
 
 server.listen(port, hostname, () => {
+  // Add .env variables and form script.js from template.
+  const fs = require('fs')
+  const readable = fs.createReadStream(__dirname + '/templates/client/script.js', { encoding: 'utf8', highWaterMark: 16 * 1024 })
+  const writable = fs.createWriteStream(__dirname + '/public/client/script.js')
+
+  // Insert current .env vars.
+  const envConstants =
+    `const protocol = '${protocol}'\n` +
+    `const hostname = '${hostname}'\n` +
+    `const portStr = '${portStr}'\n\n`
+  writable.write(envConstants)
+  readable.pipe(writable)
+
   console.log(`Server running at http://${hostname}${portStr}/`)
 })

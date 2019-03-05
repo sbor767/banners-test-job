@@ -5,3 +5,6 @@ node_modules
 test-specimens
 
 .env
+
+# This file will be continuously regenerate by server.listen() every time you start the server.
+public/client/script.js
