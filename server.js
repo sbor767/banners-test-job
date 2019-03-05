@@ -1,10 +1,13 @@
+require('dotenv').config()
+const protocol = process.env.PROTOCOL || 'http'
+const hostname = process.env.HOSTNAME || 'localhost'
+const port = process.env.PORT
+const portStr = port ? ':' + port : ''
+
 const http = require('http')
 const url = require('url');
 const staticServer = require('node-static')
 
-const protocol = 'http'
-const hostname = 'localhost'
-const port = 8091
 
 const fileServer = new staticServer.Server('./public')
 
@@ -21,11 +24,11 @@ const server = http.createServer((req, res) => {
         res.writeHead(code, err.headers)
         res.end()
       }
+      const urlParsed = url.parse(req.url, true)
 
       if (err) {
 
         // Treat non file requests
-        const urlParsed = url.parse(req.url, true)
 
         /* /get path */
         if (urlParsed.pathname === '/get') {
@@ -37,7 +40,7 @@ const server = http.createServer((req, res) => {
 
           try {
             const banner = await require('./api/banners').get(id)
-            const html = `<a href="${banner.href}" target="_blank"><img src="${protocol}://${hostname}:${port}/banners/${banner.fileName}" alt="${banner.title}" width="${banner.width}" height="${banner.height}" /></a>`
+            const html = `<a href="${banner.href}" target="_blank"><img src="${protocol}://${hostname}${portStr}/banners/${banner.fileName}" alt="${banner.title}" width="${banner.width}" height="${banner.height}" /></a>`
             res.end(html)
             return
 
@@ -57,5 +60,5 @@ const server = http.createServer((req, res) => {
 
 
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`)
+  console.log(`Server running at http://${hostname}${portStr}/`)
 })
