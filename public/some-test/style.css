@@ -1,0 +1,66 @@
+/* html, body, #app { */
+html, body {
+	position: relative;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	font: 16px/20px normal Arial, sans-serif;
+}
+
+.app {
+	display: flex;
+	height: 100%;
+}
+
+.page {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1;
+	-ms-flex: 1 1;
+	min-height: 90vh;
+	max-width: 550px;
+	margin: auto;
+	padding: 15px;
+	border-radius: 10px;
+
+	background-color: #fff;
+	-webkit-box-shadow: 0 20px 80px rgba(0,0,0,.6);
+	box-shadow: 0 20px 80px rgba(0,0,0,.6);
+}
+
+.header {
+	display: flex;
+}
+.header__logo {
+	font-style: italic;
+	font-weight: bolder;
+	font-size: 2rem;
+}
+.header__center {
+	font-weight: bolder;
+	font-size: 1.8rem;
+	color: blue;
+}
+.header__signInOut {
+	margin-left: auto;
+	display: flex;
+	flex-direction: column;
+}
+.header__signOutButton {
+	width: auto;
+}
+.header__signInOutStatus {
+	font-size: .8rem;
+}
+.header__signInOutStatusName {
+	font-weight: bold;
+}
+
+.footer {
+	display: flex;
+	margin-top: auto;
+}
+.footer__text {
+	margin-left: auto;
+	margin-right: auto;
+}
