@@ -36,7 +36,7 @@ const server = http.createServer((req, res) => {
           }
 
           try {
-            const banner = await require('./api').get(id)
+            const banner = await require('./api/banners').get(id)
             const html = `<a href="${banner.href}" target="_blank"><img src="${protocol}://${hostname}:${port}/banners/${banner.fileName}" alt="${banner.title}" width="${banner.width}" height="${banner.height}" /></a>`
             res.end(html)
             return
