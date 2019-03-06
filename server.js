@@ -18,6 +18,8 @@ const server = http.createServer((req, res) => {
   req.addListener('end', () => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     fileServer.serve(req, res, async (err, result) => {
+      const urlParsed = url.parse(req.url, true)
+
       const errorEnd = (code, logMessage) => {
         console.error(logMessage)
         // Respond to the client
@@ -25,32 +27,20 @@ const server = http.createServer((req, res) => {
         res.end()
       }
 
-
       if (err) {
         /**
          * Treat non file requests
          */
 
         /**
-         * path = '/get'
+         * path = '/banner-info'
          */
-        const urlParsed = url.parse(req.url, true)
-
-        if (urlParsed.pathname === '/get') {
+        if (urlParsed.pathname === '/banner-info') {
 
           try {
             const randomClickId = getRandomInt()
             const banner = await require('./api/banners').getRandom()
-            const html =
-              `<a href="${banner.href}" target="_blank">` +
-                `<img ` +
-                  `src="${protocol}://${hostname}${portStr}/banners/${banner.fileName}?click_id=${randomClickId}" ` +
-                  `alt="${banner.title}" ` +
-                  `width="${banner.width}" ` +
-                  `height="${banner.height}" ` +
-                `/>` +
-              `</a>`
-            res.end(JSON.stringify({randomId: randomClickId, html}))
+            res.end(JSON.stringify({randomClickId, banner}))
             return
 
           } catch (e) {
@@ -62,6 +52,20 @@ const server = http.createServer((req, res) => {
 
         // 404 page
         errorEnd(404, "Error serving " + req.url + " - " + err.status + '==' + err.message)
+      } else {
+
+        // File is found but we can do something/
+
+        /**
+         * Get client info when banner just showed.
+         */
+        // console.log('urlParsed', urlParsed)
+        // For paths begins from /banners/ and contains query param 'click_id'
+        // which means - we give back banner img and getting client info.
+        if (urlParsed.pathname.toLowerCase().indexOf('/banners/') === 0 && !!urlParsed.query.click_id) {
+          console.log('IMG=======', urlParsed.href)
+        }
+
       }
     })
   }).resume()

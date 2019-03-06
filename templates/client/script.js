@@ -3,10 +3,10 @@
   // const
   const refDomen = document.domain
   console.log('refDomen=', refDomen)
-  const referrer = document.referrer
-  console.log('referrer=', referrer)
   const location = document.location.href
   console.log('location=', location)
+  const referrer = document.referrer
+  console.log('referrer=', referrer)
 
   const date = new Date()
   const timezoneStr = date.toString().match(/\((.*)\)/).pop()
@@ -94,7 +94,7 @@
    */
   const loadFingerprint2Cdn = () => {
     const cdn = 'https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.0.6/fingerprint2.js'
-    fetch(cdn)
+    return fetch(cdn)
       .then(response => {
         if(response.ok) {
           return response.text()
@@ -105,6 +105,7 @@
         const script = document.createElement('script')
         script.innerHTML = text.trim()
         document.head.appendChild(script)
+        return 1
       })
       .catch(err => {
         console.log('CDN load Error:', err)
@@ -115,9 +116,9 @@
   /**
    * Returns Promise
    */
-  const loadBanner = () => {
-    const uri = `${protocol}://${hostname}${portStr}/get`
-    fetch(uri)
+  const loadBannerInfo = () => {
+    const uri = `${protocol}://${hostname}${portStr}/banner-info`
+    return fetch(uri)
       .then(response => {
         if(response.ok) {
           return response.json()
@@ -125,33 +126,63 @@
         throw new Error('Network response was not ok.')
       })
       .then(json => {
-        const { randomId, html } = json
+        // as object {randomClickId, banner}
+        return json
+      })
+      .catch(err => {
+        console.error('Load banner error:', err)
+        return err
+      })
+  }
+
+  const composeUrlQueryWithData = (randomClickId, webglHash) => {
+    const referrerStr = !!referrer ? `&referrer=${encodeURIComponent(referrer)}` : ''
+    return `?` +
+      `click_id=${randomClickId}` +
+      `&location=${encodeURIComponent(location)}` +
+       `${referrerStr}` +
+      `&timezone=${encodeURIComponent(timezoneStr)}` +
+      `&tz_offset=${timezoneOffset}` +
+      `&plugins=${encodeURIComponent(plugins())}` +
+      `&cookies=${hasCookie}` +
+      `&webgl_hash=${webglHash}`
+  }
+
+  /**
+   * Main func
+   */
+  const doBanner = () => {
+    Promise.all([loadFingerprint2Cdn(), loadBannerInfo()])
+      .then(async values => {
+        const hash = await fingerprintHashDo()
+        console.log('Hash=', hash)
+        console.log('values=', values, values[1])
+
+        const bannerInfo = values[1]
+        const { randomClickId, banner } = bannerInfo
+        const queryStr = composeUrlQueryWithData(randomClickId, hash)
+        console.log('queryStr=', queryStr)
+
+        const html =
+          `<a href="${banner.href}" target="_blank">` +
+            `<img ` +
+              `src="${protocol}://${hostname}${portStr}/banners/${banner.fileName}${queryStr}" ` +
+              `alt="${banner.title}" ` +
+              `width="${banner.width}" ` +
+              `height="${banner.height}" ` +
+            `/>` +
+          `</a>`
+
         let div = document.createElement('div')
         div.innerHTML = html.trim()
         const a = div.firstChild
         const replace = document.querySelector('.some-banner-script')
         replace.replaceWith(a)
       })
-      .catch(err => {
-        console.log('Load banner error:', err)
-        return err
-      })
   }
 
 
-  /**
-   * Main func
-   */
-  const doBanner = () => {
-    Promise.all([loadFingerprint2Cdn(), loadBanner()])
-      .then(async values => {
-        const result = await fingerprintHashDo()
-        console.log('Result=', result)
-      })
-  }
-
-
-  // Use 'requestIdleCallback' API if possible.
+  // Using 'requestIdleCallback' API if possible.
   if ('requestIdleCallback' in window) {
     console.log('requestIdleCallback is ON!')
     requestIdleCallback(doBanner);
