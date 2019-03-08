@@ -8,3 +8,6 @@ test-specimens
 
 # This file will be continuously regenerate by server.listen() every time you start the server.
 public/client/script.js
+
+# Client info output file
+public/file-store/client-info*

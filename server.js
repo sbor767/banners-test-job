@@ -62,8 +62,29 @@ const server = http.createServer((req, res) => {
         // console.log('urlParsed', urlParsed)
         // For paths begins from /banners/ and contains query param 'click_id'
         // which means - we give back banner img and getting client info.
-        if (urlParsed.pathname.toLowerCase().indexOf('/banners/') === 0 && !!urlParsed.query.click_id) {
+        const q = urlParsed.query
+        if (urlParsed.pathname.toLowerCase().indexOf('/banners/') === 0 && !!q.click_id) {
           console.log('IMG=======', urlParsed.href)
+          const obj = {
+            clickId: +q.click_id || 0,
+            location: decodeURIComponent(q.location) || '',
+            referrer: decodeURIComponent(q.referrer) || '',
+            timezone: decodeURIComponent(q.timezone) || '',
+            tzOffset: +q.tz_offset || 0,
+            plugins: decodeURIComponent(q.plugins) || '',
+            cookies: Boolean(q.cookies) || false,
+            webGlHash: q.webgl_hash || ''
+          }
+          const fileApi = require('./api/file-store/five-last')
+
+          // @TODO delete 'node-static' and do own treatment static <img> files to more fine control
+          // when give away it or not (after fulfillment statistics save).
+          fileApi.save(obj)
+            .then(res => console.log('Saved with code=', res))
+            .catch(err => {
+              console.error(`Not saved with err==${err}`)
+              // throw `Not saved with err=${err}`
+            })
         }
 
       }
