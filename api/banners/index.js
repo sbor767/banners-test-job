@@ -33,11 +33,17 @@ const banners = {
   },
 }
 
+/**
+ * Returns Promise
+ */
 const get = id => {
   if (!banners[id]) return Promise.reject(`No banner exist with id=${id}`)
   return Promise.resolve(banners[id])
 }
 
+/**
+ * Returns Promise
+ */
 const getRandom = () => {
   const keys = Object.keys(banners)
   // https://stackoverflow.com/a/5915122

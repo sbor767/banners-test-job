@@ -1,18 +1,12 @@
 ;(function() {
 
   // const
-  const refDomen = document.domain
-  console.log('refDomen=', refDomen)
   const location = document.location.href
-  console.log('location=', location)
   const referrer = document.referrer
-  console.log('referrer=', referrer)
 
   const date = new Date()
   const timezoneStr = date.toString().match(/\((.*)\)/).pop()
-  console.log('timezoneStr=', timezoneStr)
   const timezoneOffset = date.getTimezoneOffset()
-  console.log('timezoneOffset=', timezoneOffset)
 
   const plugins = () => {
     const plugins = navigator.plugins
@@ -22,12 +16,10 @@
     }
     return pluginsStr
   }
-  console.log('plugins=', plugins())
 
   const hasCookie = !!document.cookie
-  console.log('hasCookie=', hasCookie)
 
-  // It is also possible to get a lot of what is higher in the code using the following:
+  // It is also possible to get a lot of what is higher in the code using the following fingerprint2 API:
 
 
   /**
@@ -80,11 +72,9 @@
     }
     return Fingerprint2.getPromise(options)
       .then(components => { // an array of components: {key: ..., value: ...}
-        console.log('Fingerprint2.getPromise--result=', components)
         return Fingerprint2.x64hash128(components.join(''), 31)
       })
       .then(hash => {
-        console.log('Fingerprint2.getPromise--x64hash128=', hash)
         return hash
       })
   }
@@ -105,11 +95,9 @@
         const script = document.createElement('script')
         script.innerHTML = text.trim()
         document.head.appendChild(script)
-        return 1
       })
       .catch(err => {
-        console.log('CDN load Error:', err)
-        return err
+        throw `CDN fail loading with error: ${err}`
       })
   }
 
@@ -120,18 +108,11 @@
     const uri = `${protocol}://${hostname}${portStr}/banner-info`
     return fetch(uri)
       .then(response => {
-        if(response.ok) {
-          return response.json()
-        }
+        if(response.ok) return response.json() // as object {randomClickId, banner}
         throw new Error('Network response was not ok.')
       })
-      .then(json => {
-        // as object {randomClickId, banner}
-        return json
-      })
       .catch(err => {
-        console.error('Load banner error:', err)
-        return err
+        throw `Load banner error: ${err}`
       })
   }
 
@@ -155,13 +136,9 @@
     Promise.all([loadFingerprint2Cdn(), loadBannerInfo()])
       .then(async values => {
         const hash = await fingerprintHashDo()
-        console.log('Hash=', hash)
-        console.log('values=', values, values[1])
-
         const bannerInfo = values[1]
         const { randomClickId, banner } = bannerInfo
         const queryStr = composeUrlQueryWithData(randomClickId, hash)
-        console.log('queryStr=', queryStr)
 
         const html =
           `<a href="${banner.href}" target="_blank">` +
@@ -174,7 +151,7 @@
           `</a>`
 
         let div = document.createElement('div')
-        div.innerHTML = html.trim()
+        div.innerHTML = html
         const a = div.firstChild
         const replace = document.querySelector('.some-banner-script')
         replace.replaceWith(a)
@@ -184,11 +161,9 @@
 
   // Using 'requestIdleCallback' API if possible.
   if ('requestIdleCallback' in window) {
-    console.log('requestIdleCallback is ON!')
     requestIdleCallback(doBanner);
   }
   else {
-    console.log('requestIdleCallback is OFF!')
     setTimeout(doBanner, 1)
   }
 
