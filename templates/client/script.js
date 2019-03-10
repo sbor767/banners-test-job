@@ -72,10 +72,10 @@
     }
     return Fingerprint2.getPromise(options)
       .then(components => { // an array of components: {key: ..., value: ...}
-        return Fingerprint2.x64hash128(components.join(''), 31)
+        return components.map(component => component.value)
       })
-      .then(hash => {
-        return hash
+      .then(values => {
+        return Fingerprint2.x64hash128(values.join(''), 31)
       })
   }
 
@@ -84,6 +84,7 @@
    */
   const loadFingerprint2Cdn = () => {
     const cdn = 'https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.0.6/fingerprint2.js'
+    // const cdn = 'https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.0.6/fingerprint2.min.js'
     return fetch(cdn)
       .then(response => {
         if(response.ok) {
