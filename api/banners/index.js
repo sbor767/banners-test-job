@@ -51,5 +51,4 @@ const getRandom = () => {
   return get(randomId)
 }
 
-exports.get = get
 exports.getRandom = getRandom

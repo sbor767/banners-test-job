@@ -5,13 +5,18 @@ const port = process.env.PORT
 const portStr = port ? ':' + port : ''
 
 const http = require('http')
-const url = require('url');
+const url = require('url')
+const util = require('util')
 const staticServer = require('node-static')
+
+const fileApi = require('./api/file-store/five-last')
+
 
 // Gets random integer within 0..65535
 const getRandomInt = () =>  Math.floor(Math.random() * 2 ** 16)
 
-const fileServer = new staticServer.Server('./public')
+// const fileServer = new staticServer.Server('./public')
+const fileServer = new staticServer.Server('./public', { cache: 0 })
 
 const server = http.createServer((req, res) => {
 
@@ -50,6 +55,11 @@ const server = http.createServer((req, res) => {
 
         }
 
+
+        if (err.status === 404) { // If the file wasn't found
+          // fileServer.serveFile('/some-test/404.html', 404, {}, req, res)
+        }
+
         // 404 page
         errorEnd(404, "Error serving " + req.url + " - " + err.status + '==' + err.message)
       } else {
@@ -59,12 +69,10 @@ const server = http.createServer((req, res) => {
         /**
          * Get client info when banner just showed.
          */
-        // console.log('urlParsed', urlParsed)
         // For paths begins from /banners/ and contains query param 'click_id'
         // which means - we give back banner img and getting client info.
         const q = urlParsed.query
         if (urlParsed.pathname.toLowerCase().indexOf('/banners/') === 0 && !!q.click_id) {
-          console.log('IMG=======', urlParsed.href)
           const obj = {
             clickId: +q.click_id || 0,
             location: decodeURIComponent(q.location) || '',
@@ -75,7 +83,6 @@ const server = http.createServer((req, res) => {
             cookies: Boolean(q.cookies) || false,
             webGlHash: q.webgl_hash || ''
           }
-          const fileApi = require('./api/file-store/five-last')
 
           // @TODO delete 'node-static' and do own treatment static <img> files to more fine control
           // when give away it or not (after fulfillment statistics save).
@@ -96,11 +103,15 @@ const server = http.createServer((req, res) => {
 /**
  * Run server
  */
-server.listen(port, hostname, () => {
+// server.listen(port, hostname, () => {
+server.listen(port, hostname, async () => {
 
   // @TODO Move next to webpack, but for now we do this by pure node.
-  // Prepare build-up client script.js by adding fingerprint library, environment variables and basic script.js
-  // from template folder.
+
+  /**
+   * Prepare build-up client script.js by adding fingerprint library, environment variables and basic script.js
+   * from template folder.
+   */
   const fs = require('fs')
   const fingerprintLibrary = fs.createReadStream(__dirname + '/templates/libraries/fingerprint2.js', { encoding: 'utf8', highWaterMark: 64 * 1024 })
   const sourceScript = fs.createReadStream(__dirname + '/templates/client/script.js', { encoding: 'utf8', highWaterMark: 16 * 1024 })
@@ -114,11 +125,13 @@ server.listen(port, hostname, () => {
   s._read = () => {} // redundant? see update below
   // Insert for code separation.
   s.push('\n\n')
+
+  // @TODO Change to more unique names.
   // Insert current .env vars.
   const envConstants =
     `const protocol = '${protocol}'\n` +
     `const hostname = '${hostname}'\n` +
-    `const portStr = '${portStr}';/**/\n\n`
+    `const portStr = '${portStr}';\n\n`
   s.push(envConstants)
   // Insert to denote the end of stream.
   s.push(null)
@@ -132,6 +145,41 @@ server.listen(port, hostname, () => {
   s.on('end', () => {
     sourceScript.pipe(writable)
   })
+
+
+  /**
+   * Also prepare index.html for testing app by it copying from template and replace some stubs by environment vars.
+   */
+  const readReplaceAndWriteHtmlIndex = () => {
+    const sourceIndexName = 'templates/some-test/index.html'
+    const targetIndexName = 'public/some-test/index.html'
+    const stubTag = '<someBannerScript />'
+
+    const src = `${protocol}://${hostname}${portStr}/client/script.js`
+    const scriptTag = `<script type="text/javascript" class="some-banner-script" src="${src}"></script>`
+
+    return util.promisify(fs.readFile)(sourceIndexName, 'utf8')
+      // .then(body => body.text())
+      .then(text => {
+        return text.replace(stubTag, scriptTag)
+      })
+      .then(html => {
+        return util.promisify(fs.writeFile)(targetIndexName, html)
+          .then(() => {
+            return 'ok'
+          })
+
+      })
+      .catch(err => {
+        throw `Failed readReplaceAndWriteHtmlIndex() with error: ${err}`
+      })
+  }
+  try {
+    await readReplaceAndWriteHtmlIndex()
+  } catch (e) {
+    throw e
+  }
+
 
   console.log(`Server running at http://${hostname}${portStr}/`)
 })

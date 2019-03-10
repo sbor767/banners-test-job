@@ -141,10 +141,11 @@
         const queryStr = composeUrlQueryWithData(randomClickId, hash)
 
         const html =
-          `<a href="${banner.href}" target="_blank">` +
+          `<a href="${banner.href}" target="_blank" class="banner">` +
             `<img ` +
               `src="${protocol}://${hostname}${portStr}/banners/${banner.fileName}${queryStr}" ` +
               `alt="${banner.title}" ` +
+              `class="banner__img" ` +
               `width="${banner.width}" ` +
               `height="${banner.height}" ` +
             `/>` +
