@@ -9,13 +9,14 @@ const loadClientInfoFromFileOnce = (function() {
   let isDone = false
 
   return () => {
+    console.log('isDone', isDone)
     if (isDone) return Promise.reject(isDone)
 
     const uri = `${protocol}://${hostname}${portStr}/file-store/client-info.json`
     return fetch(uri)
       .then(response => {
-        console.log('isDone', isDone)
         isDone = true
+        console.log('fetching...')
         if(response.ok) return response.text()
         throw new Error('Network response was not ok.')
       })
@@ -24,6 +25,10 @@ const loadClientInfoFromFileOnce = (function() {
       })
   }
 })()
+
+const delay = ms => new Promise((resolve, reject) => {
+  setTimeout(resolve, ms)
+})
 
 
 const observer = new MutationObserver(mutations => {
@@ -36,7 +41,8 @@ const observer = new MutationObserver(mutations => {
       if (banner) {
         console.log(banner)
 
-        loadClientInfoFromFileOnce()
+        // This delay is required in order to server to refresh client statistics.
+        delay(500).then(loadClientInfoFromFileOnce)
           .then(text => {
               const html = `<pre class="content__clientInfo">${text}</pre>`
 
@@ -51,8 +57,7 @@ const observer = new MutationObserver(mutations => {
               if (err === true) return // Do Nothing.
               throw err
             }
-          )
-
+        )
       }
     }
 
