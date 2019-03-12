@@ -8,7 +8,7 @@ const portStr = port ? ':' + port : ''
 const internalPort = process.env.INTERNAL_PORT
 const internalPortStr = internalPort ? ':' + internalPort : ''
 
-const http = require(protocol)
+const http = require('http')
 const url = require('url')
 const util = require('util')
 const staticServer = require('node-static')
