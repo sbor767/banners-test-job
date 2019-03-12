@@ -1,12 +1,13 @@
 require('dotenv').config()
 const protocol = !!process.env.PROTOCOL && process.env.PROTOCOL === 'https' ? 'https' : 'http'
 const hostname = process.env.HOSTNAME || 'localhost'
-
 const port = process.env.PORT
 const portStr = port ? ':' + port : ''
-// Means node process port
-const internalPort = process.env.INTERNAL_PORT
-const internalPortStr = internalPort ? ':' + internalPort : ''
+
+// Means node process hostname and port
+const nodeHostname = process.env.NODE_HOSTNAME || 'localhost'
+const nodePort = process.env.NODE_PORT
+const nodePortStr = nodePort ? ':' + nodePort : ''
 
 const http = require('http')
 const url = require('url')
@@ -107,7 +108,7 @@ const server = http.createServer((req, res) => {
 /**
  * Run server
  */
-server.listen(internalPort, hostname, async () => {
+server.listen(nodePort, nodeHostname, async () => {
 
   // @TODO Move next to webpack, but for now we do this by pure node.
 
@@ -190,5 +191,5 @@ server.listen(internalPort, hostname, async () => {
   }
 
 
-  console.log(`Server running at http://${hostname}${internalPortStr}/`)
+  console.log(`Server running at http://${nodeHostname}${nodePortStr}/`)
 })
