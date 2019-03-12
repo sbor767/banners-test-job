@@ -107,6 +107,7 @@ a, a:visited {
 	line-height: 1.2;
 	background-color: #f9fafa;
 	border: 1px solid #dce7e7;
+	overflow-x: auto;
 }
 
 .footer {
