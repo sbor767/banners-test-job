@@ -154,14 +154,20 @@ server.listen(port, hostname, async () => {
     const sourceIndexName = 'templates/some-test/index.html'
     const targetIndexName = 'public/some-test/index.html'
     const stubTag = '<someBannerScript />'
+    const stubTagSample = '<someBannerScriptSample />'
 
     const src = `${protocol}://${hostname}${portStr}/client/script.js`
     const scriptTag = `<script type="text/javascript" class="some-banner-script" src="${src}"></script>`
+    const scriptTagSample =
+`&lt;script 
+  type="text/javascript"
+  src="${src}"&gt;
+&lt;/script&gt;`
 
     return util.promisify(fs.readFile)(sourceIndexName, 'utf8')
       // .then(body => body.text())
       .then(text => {
-        return text.replace(stubTag, scriptTag)
+        return text.replace(stubTag, scriptTag).replace(stubTagSample, scriptTagSample)
       })
       .then(html => {
         return util.promisify(fs.writeFile)(targetIndexName, html)

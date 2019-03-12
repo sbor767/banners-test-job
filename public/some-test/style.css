@@ -7,6 +7,11 @@ html, body {
 	font: 16px/20px normal Arial, sans-serif;
 }
 
+a, a:visited {
+	text-decoration: none;
+	color: gray;
+}
+
 .app {
 	display: flex;
 	height: 100%;
@@ -18,10 +23,10 @@ html, body {
 	flex: 1 1;
 	-ms-flex: 1 1;
 	min-height: 90vh;
-	max-width: 550px;
+	max-width: 35em;
 	margin: auto;
-	padding: 15px;
-	border-radius: 10px;
+	padding: 2em;
+	border-radius: .7em;
 
 	background-color: #fff;
 	-webkit-box-shadow: 0 20px 80px rgba(0,0,0,.6);
@@ -29,31 +34,79 @@ html, body {
 }
 
 .header {
+	margin: 1em 0 0 0;
 	display: flex;
 }
-.header__logo {
-	font-style: italic;
-	font-weight: bolder;
-	font-size: 2rem;
+.header__left {
 }
-.header__center {
+.header__leftTitle {
 	font-weight: bolder;
 	font-size: 1.8rem;
-	color: blue;
 }
-.header__signInOut {
+.header__right {
 	margin-left: auto;
 	display: flex;
 	flex-direction: column;
 }
-.header__signOutButton {
-	width: auto;
+
+.content {
 }
-.header__signInOutStatus {
-	font-size: .8rem;
+.header__contentDescription {
+	padding: 3em 0 0 0;
 }
-.header__signInOutStatusName {
-	font-weight: bold;
+
+.content__bannerZone {
+	margin: 1.5em 0 0 0;
+	height: 320px;
+	width: 100%;
+	border: 1px solid gray;
+	display: flex;
+	position: relative;
+}
+.content__bannerZoneCaption {
+	position: absolute;
+	top: .5em;
+	left: 1em;
+	font-size: .7rem;
+}
+.content__bannerZoneA {
+	margin: auto;
+}
+.content__bannerZoneImg {
+
+}
+.content__bannerZoneButton {
+	position: absolute;
+	bottom: .8em;
+	right: 1em;
+	font-size: .7rem;
+}
+
+.content__insertBannerCaption {
+	margin: 1.5em 0 0 0;
+}
+.content__insertBannerPre {
+	margin: .5em 0;
+	padding: .5em 1em;
+	font-size: .7rem;
+	line-height: 1.2;
+	background-color: #f9fafa;
+	border: 1px solid #dce7e7;
+}
+.content__text {
+	margin: 1em 0 0 0;
+}
+.content__clientInfo {
+	margin: 1.5em 0 0 0;
+}
+.content__clientInfoCaption {}
+.content__clientInfoPre {
+	margin: .5em 0;
+	padding: .5em 1em;
+	font-size: .7rem;
+	line-height: 1.2;
+	background-color: #f9fafa;
+	border: 1px solid #dce7e7;
 }
 
 .footer {

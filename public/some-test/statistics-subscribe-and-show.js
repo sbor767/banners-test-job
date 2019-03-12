@@ -1,6 +1,6 @@
 // @TODO Add Doc
 
-const content = document.querySelector('.content')
+const observeDomArea = document.querySelector('.content__bannerZone')
 
 /**
  * Returns Promise
@@ -35,8 +35,8 @@ const observer = new MutationObserver(mutations => {
 
   mutations.forEach(mutation => {
     if (mutation.type === 'childList') {
-      const banner = [].slice.call(content.children)
-        .filter(node => node.tagName === 'A' && node.className === 'banner')
+      const banner = [].slice.call(observeDomArea.children)
+        .filter(node => node.tagName === 'A' && node.className === 'content__bannerZoneA')
         .pop()
       if (banner) {
         console.log(banner)
@@ -44,13 +44,14 @@ const observer = new MutationObserver(mutations => {
         // This delay is required in order to server to refresh client statistics.
         delay(500).then(loadClientInfoFromFileOnce)
           .then(text => {
-              const html = `<pre class="content__clientInfo">${text}</pre>`
+              const html = `<div class="content__clientInfoCaption">Last five client prints:</div>` +
+                `<pre class="content__clientInfoPre">${text}</pre>`
 
               let div = document.createElement('div')
+              div.className = 'content__clientInfo'
               div.innerHTML = html
-              const info = div.firstChild
               const replace = document.querySelector('.content__clientInfo_target')
-              replace.replaceWith(info)
+              replace.replaceWith(div)
             },
             err => {
               // err === true means Done is true.
@@ -67,6 +68,6 @@ const observer = new MutationObserver(mutations => {
 
 const config = { attributes: false, childList: true, characterData: false }
 
-observer.observe(content, config)
+observer.observe(observeDomArea, config)
 
 // observer.disconnect()
