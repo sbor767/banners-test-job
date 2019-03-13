@@ -2,75 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Banner deliver example</title>
-	<link href="style.css" rel="stylesheet" type="text/css">
+    <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-	<div id="app" class="app">
-        <div class="page">
-			<div class="header">
-				<div class="header__left">
-					<div class="header__leftTitle">Banner deliver example</div>
-				</div>
-				<div class="header__right">
-					<a href="https://github.com/sbor767/banner-delivery" target="_blank">GitHub</a>
-				</div>
-			</div>
-			
-			<div class="content">
+<div id="app" class="app">
+    <div class="page">
+        <div class="header">
+            <div class="header__left">
+                <div class="header__leftTitle">Banner deliver example</div>
+            </div>
+            <div class="header__right">
+                <a href="https://github.com/sbor767/banner-delivery" target="_blank">GitHub</a>
+            </div>
+        </div>
 
-				<div class="header__contentDescription">An example of providing a banner code and a backend
-					server providing a script for collecting the client’s environment and saving it
-				</div>
+        <div class="content">
 
-				<!--Banner code inserted into next div-->
-				<!--Real inserted banner code see in 'public/some-test/index.html' not in template-->
-				<div class="content__bannerZone">
-					<div class="content__bannerZoneCaption">Banner test zone</div>
+            <div class="header__contentDescription">An example of providing a banner code and a backend
+                server providing a script for collecting the client’s environment and saving it
+            </div>
 
-					<!--This pseudo-tag later will be replaced to script by node server in it start time.-->
-                    <!--And later will be replaced to banner html by the script-->
-					<someBannerScript />
+            <!--Banner code inserted into next div-->
+            <!--Real inserted banner code see in 'public/some-test/index.html' not in template-->
+            <div class="content__bannerZone">
+                <div class="content__bannerZoneCaption">Banner test zone</div>
 
-					<button
-							onclick="window.location.href=window.location.href"
-							title="Refresh window"
-							class="content__bannerZoneButton"
-					>
-						Refresh window
-					</button>
-				</div>
+                <!--This pseudo-tag later will be replaced to script by node server in it start time.-->
+                <!--And later will be replaced to banner html by the script-->
+                <someBannerScript />
 
-				<script type="text/javascript" class="subscribe-script" src="statistics-subscribe-and-show.js"></script>
+                <button
+                        onclick="window.location.href=window.location.href"
+                        title="Refresh window"
+                        class="content__bannerZoneButton"
+                >
+                    Refresh window
+                </button>
+            </div>
+
+            <script type="text/javascript" class="subscribe-script" src="statistics-subscribe-and-show.js"></script>
 
 
-				<div class="content__insertBanner">
-					<div class="content__insertBannerCaption">
-						Copy the banner code and place it on your page:
-					</div>
-					<pre class="content__insertBannerPre"><someBannerScriptSample /></pre>
-				</div>
-                <div class="content__text">
-					But he stole up to us again, and suddenly clapping his hand on my shoulder, said&mdash;"Did ye see anything looking like men going towards that ship a while ago?"
-					But he stole up to us again, and suddenly clapping his hand on my shoulder, said&mdash;"Did ye see anything looking like men going towards that ship a while ago?"
-					But he stole up to us again, and suddenly clapping his hand on my shoulder, said&mdash;"Did ye see anything looking like men going towards that ship a while ago?"					
-				</div>
+            <div class="content__insertBanner">
+                <div class="content__insertBannerCaption">
+                    Copy the banner code and place it on your page:
+                </div>
+                <pre class="content__insertBannerPre"><someBannerScriptSample /></pre>
+            </div>
+            <div class="content__text">
+                But he stole up to us again, and suddenly clapping his hand on my shoulder, said&mdash;"Did ye see
+                anything looking like men going towards that ship a while ago?"
+                But he stole up to us again, and suddenly clapping his hand on my shoulder, said&mdash;"Did ye see
+                anything looking like men going towards that ship a while ago?"
+                But he stole up to us again, and suddenly clapping his hand on my shoulder, said&mdash;"Did ye see
+                anything looking like men going towards that ship a while ago?"
+            </div>
 
-				<div class="content__clientInfo_target">
+            <div class="content__clientInfo_target">
 
-				</div>
+            </div>
 
-			</div>
-			
-			<div class="footer">
-				<div class="footer__text">
-					<a href="https://github.com/sbor767/banner-delivery" target="_blank">GitHub</a>
-				</div>
-			</div>
+        </div>
 
-		</div>
+        <div class="footer">
+            <div class="footer__text">
+                <a href="https://github.com/sbor767/banner-delivery" target="_blank">GitHub</a>
+            </div>
+        </div>
+
     </div>
+</div>
 </body>
 </html>
